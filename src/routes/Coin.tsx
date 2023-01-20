@@ -1,25 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useLocation } from "react-router-dom";
-import styled from "styled-components";
 import { InfoData, PriceData } from "../api/types/coin/coin";
-import { LoadingSpinner } from "./Coins";
-
-const Container = styled.div`
-  padding: 0 20px;
-`;
-
-const Header = styled.header`
-  height: 10vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-  font-size: 34px;
-  color: ${(props) => props.theme.accentColor};
-`;
+import { LoadingSpinner } from "../Loading";
+import { Container, Header, Title } from "./Styled";
 
 interface RouteParams {
   coinId: string;

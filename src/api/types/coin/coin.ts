@@ -1,3 +1,8 @@
+/**
+ *
+ * 코인 API 명세 타입
+ */
+
 export interface InfoData {
   id: string;
   name: string;
