@@ -1,9 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { useLocation } from "react-router-dom";
+import {
+  useLocation,
+  Link,
+  Switch,
+  Route,
+  useRouteMatch,
+} from "react-router-dom";
 import { InfoData, PriceData } from "../api/types/coin/coin";
-import { LoadingSpinner } from "../Loading";
-import { Container, Header, Title } from "./Styled";
+import Loading from "../Loading";
+import Chart from "./Chart";
+import Price from "./Price";
+import {
+  Container,
+  Description,
+  Header,
+  Overview,
+  OverviewItem,
+  Tab,
+  Tabs,
+  Title,
+} from "./Styled";
 
 interface RouteParams {
   coinId: string;
@@ -20,6 +37,9 @@ const Coin = () => {
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
 
+  const priceMatch = useRouteMatch("/:coinId/price");
+  const chartMatch = useRouteMatch("/:coinId/chart");
+
   useEffect(() => {
     (async () => {
       const infoData: InfoData = await (
@@ -31,6 +51,7 @@ const Coin = () => {
       ).json();
       setInfo(infoData);
       setPriceInfo(priceData);
+      setLoading(false);
 
       /**
        *
@@ -48,16 +69,65 @@ const Coin = () => {
       //     .join()
       // );
     })();
-  }, []);
+  }, [coinId]);
 
   return (
     <Container>
       <Header>
-        <Title>{state?.name || <LoadingSpinner />}</Title>
+        <Title>
+          {state?.name ? state.name : loading ? <Loading /> : info?.name}
+        </Title>
       </Header>
-      {loading ? <LoadingSpinner /> : null}
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Overview>
+            <OverviewItem>
+              <span>Rank:</span>
+              <span>{info?.rank}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Symbol:</span>
+              <span>${info?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source:</span>
+              <span>{info?.openSource ? "Yes" : "No"}</span>
+            </OverviewItem>
+          </Overview>
+          <Description>{info?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>Total Suply:</span>
+              <span>{priceInfo?.totalSupply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Max Supply:</span>
+              <span>{priceInfo?.maxSupply}</span>
+            </OverviewItem>
+          </Overview>
+
+          <Tabs>
+            <Tab isActive={chartMatch !== null}>
+              <Link to={`/${coinId}/chart`}>Chart</Link>
+            </Tab>
+            <Tab isActive={priceMatch !== null}>
+              <Link to={`/${coinId}/price`}>Price</Link>
+            </Tab>
+          </Tabs>
+
+          <Switch>
+            <Route path={`/:coinId/price`}>
+              <Price />
+            </Route>
+            <Route path={`/:coinId/chart`}>
+              <Chart />
+            </Route>
+          </Switch>
+        </>
+      )}
     </Container>
   );
 };
-
 export default Coin;
