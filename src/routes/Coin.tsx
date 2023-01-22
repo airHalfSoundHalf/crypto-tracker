@@ -37,8 +37,8 @@ const Coin = () => {
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
 
-  const priceMatch = useRouteMatch("/:coinId/price");
-  const chartMatch = useRouteMatch("/:coinId/chart");
+  const priceMatch = useRouteMatch(`/${coinId}/price`);
+  const chartMatch = useRouteMatch(`/${coinId}/chart`);
 
   useEffect(() => {
     (async () => {
@@ -100,11 +100,11 @@ const Coin = () => {
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{priceInfo?.totalSupply}</span>
+              <span>{priceInfo?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.maxSupply}</span>
+              <span>{priceInfo?.max_supply}</span>
             </OverviewItem>
           </Overview>
 
@@ -118,10 +118,10 @@ const Coin = () => {
           </Tabs>
 
           <Switch>
-            <Route path={`/:coinId/price`}>
+            <Route path={`/${coinId}/price`}>
               <Price />
             </Route>
-            <Route path={`/:coinId/chart`}>
+            <Route path={`/${coinId}/chart`}>
               <Chart />
             </Route>
           </Switch>

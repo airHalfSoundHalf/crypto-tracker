@@ -36,8 +36,8 @@ export interface PriceData {
   symbol: string;
   rank: number;
   circulatingSupply: number;
-  totalSupply: number;
-  maxSupply: number;
+  total_supply: number;
+  max_supply: number;
   betaValue: number;
   firstDataAt: string;
   lastUpdated: string;
