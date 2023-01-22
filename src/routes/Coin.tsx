@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import {
   useLocation,
@@ -7,7 +7,8 @@ import {
   Route,
   useRouteMatch,
 } from "react-router-dom";
-import { InfoData, PriceData } from "../api/types/coin/coin";
+import { fetchCoinInfos, fetchCoinTickers } from "../api/domain/api";
+import { IInfo, IPrice } from "../api/types/coin/coin";
 import Loading from "../Loading";
 import Chart from "./Chart";
 import Price from "./Price";
@@ -31,51 +32,26 @@ interface RouteState {
 }
 
 const Coin = () => {
-  const [loading, setLoading] = useState(true);
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
-
   const priceMatch = useRouteMatch(`/${coinId}/price`);
   const chartMatch = useRouteMatch(`/${coinId}/chart`);
 
-  useEffect(() => {
-    (async () => {
-      const infoData: InfoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
+  const { data: infosData, isLoading: infosLoading = {} } = useQuery<IInfo>(
+    ["info", coinId],
+    () => fetchCoinInfos(coinId)
+  );
 
-      const priceData: PriceData = await (
-        await fetch(`http://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      setInfo(infoData);
-      setPriceInfo(priceData);
-      setLoading(false);
+  const { data: tickersData, isLoading: tickersLoading = {} } =
+    useQuery<IPrice>(["tickers", coinId], () => fetchCoinTickers(coinId));
 
-      /**
-       *
-       * api 프로퍼티 타입 콘솔 디버깅 팁
-       * Object.keys()
-       * Object.values()
-       * Object.values().map(v => typeof v).join()
-       *
-       */
-      // console.log("info:", priceData.quotes);
-      // console.log(
-      //   "infoData:",
-      //   Object.values(priceData.quotes)
-      //     .map((v: any) => typeof v)
-      //     .join()
-      // );
-    })();
-  }, [coinId]);
+  const loading = infosLoading || tickersLoading;
 
   return (
     <Container>
       <Header>
         <Title>
-          {state?.name ? state.name : loading ? <Loading /> : info?.name}
+          {state?.name ? state.name : loading ? <Loading /> : infosData?.name}
         </Title>
       </Header>
       {loading ? (
@@ -85,26 +61,26 @@ const Coin = () => {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infosData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${infosData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.openSource ? "Yes" : "No"}</span>
+              <span>{infosData?.openSource ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{infosData?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{tickersData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
 

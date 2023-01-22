@@ -3,7 +3,7 @@
  * 코인 API 명세 타입
  */
 
-export interface InfoData {
+export interface IInfo {
   id: string;
   name: string;
   symbol: string;
@@ -30,7 +30,7 @@ export interface InfoData {
   lastDataAt: string;
 }
 
-export interface PriceData {
+export interface IPrice {
   id: string;
   name: string;
   symbol: string;
