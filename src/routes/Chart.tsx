@@ -20,8 +20,12 @@ interface ChartProps {
 }
 
 const Chart = ({ coinId }: ChartProps) => {
-  const { data, isLoading } = useQuery<IHistorical[]>(["ohlcv", coinId], () =>
-    fetchCoinHistory(coinId)
+  const { data, isLoading } = useQuery<IHistorical[]>(
+    ["ohlcv", coinId],
+    () => fetchCoinHistory(coinId),
+    {
+      refetchInterval: 10000,
+    }
   );
 
   return (
@@ -33,7 +37,7 @@ const Chart = ({ coinId }: ChartProps) => {
           type="line"
           series={[
             {
-              name: "sales",
+              name: "Price",
               data: data?.map((price) => price.close) as [],
             },
           ]}
@@ -42,8 +46,44 @@ const Chart = ({ coinId }: ChartProps) => {
               mode: "dark",
             },
             chart: {
-              width: 500,
-              height: 500,
+              width: 300,
+              height: 300,
+              toolbar: {
+                show: false,
+              },
+              background: "transparent",
+            },
+            grid: {
+              show: false,
+            },
+            stroke: {
+              curve: "smooth",
+              width: 4,
+            },
+            yaxis: {
+              show: false,
+            },
+            xaxis: {
+              axisBorder: { show: false },
+              axisTicks: { show: false },
+              labels: {
+                show: false,
+              },
+              type: "datetime",
+              categories: data?.map((price) => price.time_close) as [],
+            },
+            fill: {
+              type: "gradient",
+              gradient: {
+                gradientToColors: ["#0be881"],
+                stops: [0, 100],
+              },
+              colors: ["#0fbcf9"],
+            },
+            tooltip: {
+              y: {
+                formatter: (value) => `$ ${value.toFixed(2)}`,
+              },
             },
           }}
         />
