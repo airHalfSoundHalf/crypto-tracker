@@ -21,7 +21,7 @@ const Coins = () => {
   return (
     <Container>
       <Helmet>
-        <title>코인</title>
+        <title>{`코인`}</title>
       </Helmet>
       <Header>
         <Title>코인</Title>

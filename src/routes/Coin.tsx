@@ -54,7 +54,9 @@ const Coin = () => {
     <Container>
       <Helmet>
         <title>
-          {state?.name ? state.name : loading ? <Loading /> : infosData?.name}
+          {`${
+            state?.name ? state.name : loading ? <Loading /> : infosData?.name
+          }`}
         </title>
       </Helmet>
       <Header>
