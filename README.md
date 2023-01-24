@@ -7,13 +7,16 @@
 <br>
 
 -port 3000
+
 ```bash
 -> npm start
 ```
 
 <br>
 
--stack
+-lib
+
 1. react-query
 2. styled-components
 3. apexcharts
+4. react-helmet
